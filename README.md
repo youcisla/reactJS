@@ -26,4 +26,4 @@ A simple notes-taking application built with **React.js** and **Tailwind CSS**. 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/youcisla/reactJS
+   git clone https://github.com/youcisla/reactJS.git
