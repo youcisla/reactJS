@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enhanced Notes App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- React and ReactDOM via CDN -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <!-- Babel for JSX support -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div id="root" class="flex flex-col items-center justify-center min-h-screen">
+    <!-- The React application will render here -->
+  </div>
+  <!-- App script -->
+  <script type="text/babel">
+    // React Component
+    function App() {
+      const [notes, setNotes] = React.useState([]);
+      const [input, setInput] = React.useState("");
+      const [search, setSearch] = React.useState("");
+      const [editingIndex, setEditingIndex] = React.useState(null);
+
+      const addNote = () => {
+        if (input.trim()) {
+          setNotes([...notes, input]);
+          setInput("");
+        }
+      };
+
+      const deleteNote = (index) => {
+        setNotes(notes.filter((_, i) => i !== index));
+      };
+
+      const editNote = (index) => {
+        setInput(notes[index]);
+        setEditingIndex(index);
+      };
+
+      const saveNote = () => {
+        if (input.trim()) {
+          setNotes(notes.map((note, i) => (i === editingIndex ? input : note)));
+          setInput("");
+          setEditingIndex(null);
+        }
+      };
+
+      const filteredNotes = notes.filter(note =>
+        note.toLowerCase().includes(search.toLowerCase())
+      );
+
+      return (
+        <div className="min-h-screen flex flex-col items-center p-4">
+          <h1 className="text-3xl font-bold text-indigo-700 mb-6">Enhanced Notes App</h1>
+
+          <div className="flex items-center w-full max-w-lg mb-4">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Write a note..."
+              className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring focus:ring-indigo-300 w-full"
+              maxLength="100"
+            />
+            <button
+              onClick={editingIndex === null ? addNote : saveNote}
+              className="bg-indigo-500 text-white px-4 py-2 rounded-r-md hover:bg-indigo-600"
+            >
+              {editingIndex === null ? "Add Note" : "Save Note"}
+            </button>
+          </div>
+
+          <p className="text-sm text-gray-600 mb-4">
+            {100 - input.length} characters remaining
+          </p>
+
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search notes..."
+            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring focus:ring-indigo-300 mb-6 w-full max-w-lg"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
+            {filteredNotes.map((note, index) => (
+              <div
+                key={index}
+                className="bg-yellow-200 p-4 rounded-md shadow-md flex justify-between items-start"
+              >
+                <p className="text-gray-800 flex-1 mr-2">{note}</p>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => editNote(index)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    &#9998;
+                  </button>
+                  <button
+                    onClick={() => deleteNote(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    &#x2715;
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Render the App component
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+</body>
+</html>
